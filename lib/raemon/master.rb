@@ -29,10 +29,10 @@ module Raemon
     
     def initialize(options={})
       @detach         = options[:detach] || false
-      @pid_file       = options[:pid_file] # TODO: let the master make the pid...?
+      @pid_file       = options[:pid_file]
       @logger         = options[:logger] || Logger.new(STDOUT)
-      @timeout        = options[:timeout] || 5
-      @memory_limit   = options[:memory_limit] || 2 # in MB
+      @timeout        = options[:timeout] || 60
+      @memory_limit   = options[:memory_limit] # in MB
       
       daemonize if @detach
     end
@@ -69,6 +69,24 @@ module Raemon
       end
     end
     
+    def worker_heartbeat!(worker)
+      @t = @ti = 0 if @t.nil? || @ti.nil?
+      heartbeat = worker.pulse # pulse is our lifeline to the master process
+      
+      begin
+        # Pulsate
+        @t == (@ti = Time.now.to_i) or heartbeat.chmod(@t = @ti)
+      
+        # Make sure master is still around otherwise exit
+        master_pid == Process.ppid or return
+      rescue => ex
+        if heartbeat
+          logger.error "Unhandled listen loop exception #{ex.inspect}."
+          logger.error ex.backtrace.join("\n")
+        end
+      end
+    end
+    
     
     private
         
@@ -98,7 +116,7 @@ module Raemon
           loop do
             monitor_memory_usage
             reap_all_workers
-            
+
             case SIG_QUEUE.shift
             when nil
               murder_lazy_workers
@@ -262,9 +280,7 @@ module Raemon
       # for connections and doesn't die until the parent dies (or is
       # given a INT, QUIT, or TERM signal)
       def worker_loop!(worker)
-        ppid = master_pid
         init_worker_process(worker)
-        heartbeat = worker.pulse # pulse is our lifeline to the master process
 
         # Graceful shutdown
         trap(:QUIT) do
@@ -278,33 +294,11 @@ module Raemon
         # Worker start
         logger.info "worker=#{worker.id} ready"
         worker.start if worker.respond_to?(:start)
-        t = ti = 0
-
-        loop do
-          begin            
-            # Pulsate
-            t == (ti = Time.now.to_i) or heartbeat.chmod(t = ti)
-
-            # Run worker application iteration
-            # TODO: block?
-            worker.runloop
-
-            # Make sure master is still around otherwise exit
-            ppid == Process.ppid or return
-
-            # Pulsate
-            t == (ti = Time.now.to_i) or heartbeat.chmod(t = ti)         
-          rescue => ex
-            if heartbeat
-              logger.error "Unhandled listen loop exception #{ex.inspect}."
-              logger.error ex.backtrace.join("\n")
-            end
-          end
-        end while heartbeat
         
-        # Once this method hits the bottom, our worker is done-zo
+        # Worker run loop
+        worker.run
       end
-
+      
       # delivers a signal to a worker and fails gracefully if the worker
       # is no longer running.
       def kill_worker(signal, wpid)
@@ -399,7 +393,7 @@ module Raemon
         if (@memory_timer -= 1) <= 0
           WORKERS.dup.each_pair do |wpid, worker|
             if memory_usage(wpid) > (memory_limit*1024)
-              worker.pulse.close rescue nil
+              logger.warn "memory limit (#{memory_limit}MB) reached by worker=#{worker.id}"
               kill_worker(:QUIT, wpid)
             end
           end

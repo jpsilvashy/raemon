@@ -20,13 +20,13 @@ module Raemon
         @id == other_id
       end
       
-      def runloop
+      def run
         raise "Abstract method"
       end
       
-      # def worker_pulse!
-      #   master.worker_pulse!
-      # end
+      def heartbeat!
+        master.worker_heartbeat!(self)
+      end
     end
     
   end

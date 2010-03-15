@@ -19,10 +19,8 @@ class JobWorker
     @beanstalk.close
   end
   
-  def runloop
-    # loop do
-      # stop if shutting_down?
-    
+  def run
+    loop do
       begin
         job = @beanstalk.reserve(2)
       rescue Beanstalk::TimedOut
@@ -34,7 +32,9 @@ class JobWorker
         # process job here ...
         job.delete
       end
-    # end
+      
+      heartbeat!
+    end
   end
 
 end

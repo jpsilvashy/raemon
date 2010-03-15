@@ -6,7 +6,7 @@ require 'beanstalk-client'
 
 @queue = Beanstalk::Pool.new(['localhost:11300'])
 
-num_jobs = 10
+num_jobs = 20
 
 (0...num_jobs).each do |id|
   job = "Job#{id}"

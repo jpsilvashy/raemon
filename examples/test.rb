@@ -14,18 +14,13 @@ class Test
     logger.info "=> Stopping worker #{Process.pid}"
   end
 
-  def runloop
-    # @x ||= 1
-    
-    logger.warn "I'm executing .. #{Process.ppid}:#{Process.pid}"
-    sleep 2
-    
-    # if @x < 4
-    #   sleep 2
-    # else
-    #   sleep 20
-    # end    
-    # @x += 1
+  def run
+    loop do
+      logger.warn "I'm executing .. #{Process.ppid}:#{Process.pid}"
+      sleep 2
+      
+      heartbeat!
+    end
   end
 
 end
