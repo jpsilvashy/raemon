@@ -43,7 +43,6 @@ class EventedJobWorker
       end
     end
   end
-
 end
 
 Raemon::Master.start 2, EventedJobWorker

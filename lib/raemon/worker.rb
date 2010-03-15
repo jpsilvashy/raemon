@@ -28,6 +28,6 @@ module Raemon
         master.worker_heartbeat!(self)
       end
     end
-    
+        
   end
 end

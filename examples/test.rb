@@ -22,7 +22,6 @@ class Test
       heartbeat!
     end
   end
-
 end
 
 Raemon::Master.start 3, Test

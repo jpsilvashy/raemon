@@ -36,7 +36,6 @@ class JobWorker
       heartbeat!
     end
   end
-
 end
 
 ROOT_DIR = File.expand_path('~')

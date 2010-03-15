@@ -4,18 +4,15 @@ module Sampled
     include Raemon::Worker
     
     def start
-      logger.info "Start .. #{Process.ppid}:#{Process.pid}"
+      logger.info "=> Starting worker #{Process.pid}"
     end
 
     def stop
       logger.info "=> Stopping worker #{Process.pid}"
-      exit
     end
 
-    def execute
+    def run
       loop do
-        stop if shutting_down?
-
         logger.warn "I'm executing .. #{Process.ppid}:#{Process.pid}"
         sleep 2
       end

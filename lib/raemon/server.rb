@@ -16,7 +16,7 @@ module Raemon
 
         # Check if the server is already running
         if running?
-          STDERR.puts "Error: #{server_name} is already running."
+          $stderr.puts "Error: #{server_name} is already running."
           exit
         end
 
@@ -25,15 +25,18 @@ module Raemon
         
         worker_klass = instance_eval(config.worker_klass)
         
-        Raemon::Master.startup config.num_workers, worker_klass, {
-          :detach   => config.detach,
-          :logger   => config.logger,
-          :pid_file => pid_file
+        Raemon::Master.start config.num_workers, worker_klass, {
+          :name         => server_name,
+          :pid_file     => pid_file,
+          :detach       => config.detach,
+          :logger       => config.logger,
+          :timeout      => config.timeout,
+          :memory_limit => config.memory_limit
         }
       end
       
       def shutdown!
-        Raemon::Master.shutdown pid_file
+        Raemon::Master.stop :pid_file => pid_file
       end
       
       def console!
@@ -101,13 +104,14 @@ module Raemon
       end
       
       def running?
-        # TODO
-        false
+        pid = File.read(pid_file).to_i rescue 0
+        Process.kill(0, pid) if pid > 0
       end
     end
     
     class Configuration
-      ATTRIBUTES = [ :name, :detach, :worker_klass, :num_workers, :log_level, :logger ]
+      ATTRIBUTES = [ :name, :detach, :num_workers, :worker_klass,
+                     :log_level, :logger, :timeout, :memory_limit ]
 
       attr_accessor *ATTRIBUTES
       

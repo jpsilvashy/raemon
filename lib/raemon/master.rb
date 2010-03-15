@@ -1,14 +1,14 @@
 module Raemon
   class Master
     WORKERS = {}
-    
+
     SELF_PIPE = []
-    
+
     SIG_QUEUE = []
-    
+
     CHUNK_SIZE = (16*1024)
     
-    attr_accessor :num_workers, :worker_klass,
+    attr_accessor :name, :num_workers, :worker_klass,
                   :master_pid, :pid_file,
                   :logger, :timeout, :memory_limit
     
@@ -17,28 +17,26 @@ module Raemon
       master.start(num_workers, worker_klass)
     end
     
-    def self.shutdown(pid_file)
-      # TODO: ...
-      
-      pid = File.open(pid_file, 'r') {|f| f.gets }.to_i
+    def self.stop(options={})
+      pid_file = options[:pid_file]
+      pid = options[:pid] || (File.read(pid_file).to_i rescue 0)
       Process.kill('QUIT', pid) if pid > 0
-      # File.unlink(pid_file) # TODO: do we really need to remove the pid file? it will
-      # just be overwritten .. and lets us still try to call shutdown again if necessary
     rescue Errno::ESRCH
     end
     
     def initialize(options={})
       @detach         = options[:detach] || false
+      @name           = options[:name] || 'Raemon'
       @pid_file       = options[:pid_file]
       @logger         = options[:logger] || Logger.new(STDOUT)
-      @timeout        = options[:timeout] || 60
+      @timeout        = options[:timeout] || 180 # 3 minutes
       @memory_limit   = options[:memory_limit] # in MB
       
       daemonize if @detach
     end
     
     def start(num_workers, worker_klass)
-      logger.info "=> Starting Raemon::Master with #{num_workers} worker(s)"
+      logger.info "=> Starting #{name} with #{num_workers} worker(s)"
 
       @master_pid   = $$
       @num_workers  = num_workers
@@ -99,8 +97,6 @@ module Raemon
       # one-at-a-time time and we'll happily drop signals in case somebody
       # is signalling us too often.
       def master_loop!
-        maintain_worker_count
-        
         # this pipe is used to wake us up from select(2) in #join when signals
         # are trapped.  See trap_deferred
         init_self_pipe!
@@ -111,6 +107,9 @@ module Raemon
         
         process_name 'master'
         logger.info "master process ready"
+        
+        # Spawn workers for the first time
+        maintain_worker_count
         
         begin
           loop do
@@ -337,7 +336,7 @@ module Raemon
       end
 
       def process_name(tag)
-        $0 = tag
+        $0 = "#{name} #{tag}"
       end
 
       def init_self_pipe!
@@ -358,7 +357,7 @@ module Raemon
         STDOUT.reopen '/dev/null', 'a'
         STDERR.reopen '/dev/null', 'a'
       
-        File.open(@pid_file, 'w') { |f| f.puts(Process.pid) } if @pid_file
+        File.open(pid_file, 'w') { |f| f.puts(Process.pid) } if pid_file
       end
       
       # sets the path for the PID file of the master process
