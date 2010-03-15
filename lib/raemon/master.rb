@@ -71,11 +71,11 @@ module Raemon
       return if timeout <= 0
       @last_pulse ||= 0
       
-      begin        
+      begin
         if Time.now.to_i > @last_pulse + (timeout/2) 
           # Pulse (our lifeline to the master process)
           worker.pulse.chmod(@last_pulse = Time.now.to_i)
-          
+
           # Make sure master is still around otherwise exit
           master_pid == Process.ppid or return
         end
@@ -254,16 +254,28 @@ module Raemon
       end
 
       def maintain_worker_count
-        (off = num_workers - WORKERS.size) == 0 and return
+        off = num_workers - WORKERS.size
+
+        if off.zero?
+          return
+        elsif off == num_workers
+          # None of the workers are running, lets be gentle
+          @spawn_attempts ||= 0
+          sleep 1 if @spawn_attempts > 1
+          if timeout > 0 && @spawn_attempts > timeout
+            # We couldn't get the workers going after timeout
+            # seconds, so let's assume this will never work
+            logger.error "Unable to spawn workers after #{@spawn_attempts} attempts"
+            master_quit
+            return
+          end
+          @spawn_attempts += 1
+        else
+          @spawn_attempts = nil
+        end
         
-        # if off == num_workers
-        #   # None of the workers are running, lets be gentle
-        #   #...............
-        # elsif off > 0
-        #   return spawn_workers
-        # end
-                
-        off > 0 and return spawn_workers
+        return spawn_workers if off > 0
+
         WORKERS.dup.each_pair do |wpid, worker|
           worker.id >= num_workers && kill_worker(:QUIT, wpid) rescue nil
         end
@@ -323,6 +335,11 @@ module Raemon
       # delivers a signal to each worker
       def kill_each_worker(signal)
         WORKERS.keys.each { |wpid| kill_worker(signal, wpid) }
+      end
+
+      # Make the master quit
+      def master_quit
+        SIG_QUEUE << :QUIT
       end
 
       # unlinks a PID file at given +path+ if it contains the current PID
