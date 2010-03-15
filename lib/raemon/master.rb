@@ -68,17 +68,19 @@ module Raemon
     end
     
     def worker_heartbeat!(worker)
-      @t = @ti = 0 if @t.nil? || @ti.nil?
-      heartbeat = worker.pulse # pulse is our lifeline to the master process
+      return if timeout <= 0
+      @last_pulse ||= 0
       
-      begin
-        # Pulsate
-        @t == (@ti = Time.now.to_i) or heartbeat.chmod(@t = @ti)
-      
-        # Make sure master is still around otherwise exit
-        master_pid == Process.ppid or return
+      begin        
+        if Time.now.to_i > @last_pulse + (timeout/2) 
+          # Pulse (our lifeline to the master process)
+          worker.pulse.chmod(@last_pulse = Time.now.to_i)
+          
+          # Make sure master is still around otherwise exit
+          master_pid == Process.ppid or return
+        end
       rescue => ex
-        if heartbeat
+        if worker.pulse
           logger.error "Unhandled listen loop exception #{ex.inspect}."
           logger.error ex.backtrace.join("\n")
         end
@@ -219,6 +221,8 @@ module Raemon
       # is stale for >timeout seconds, then we'll kill the corresponding
       # worker.
       def murder_lazy_workers
+        return if timeout <= 0
+        
         diff = stat = nil
         
         WORKERS.dup.each_pair do |wpid, worker|
@@ -250,8 +254,16 @@ module Raemon
       end
 
       def maintain_worker_count
-        (off = WORKERS.size - num_workers) == 0 and return
-        off < 0 and return spawn_workers
+        (off = num_workers - WORKERS.size) == 0 and return
+        
+        # if off == num_workers
+        #   # None of the workers are running, lets be gentle
+        #   #...............
+        # elsif off > 0
+        #   return spawn_workers
+        # end
+                
+        off > 0 and return spawn_workers
         WORKERS.dup.each_pair do |wpid, worker|
           worker.id >= num_workers && kill_worker(:QUIT, wpid) rescue nil
         end
@@ -359,31 +371,6 @@ module Raemon
       
         File.open(pid_file, 'w') { |f| f.puts(Process.pid) } if pid_file
       end
-      
-      # sets the path for the PID file of the master process
-      # def pid=(path)
-      #   if path
-      #     if x = valid_pid?(path)
-      #       return path if pid && path == pid && x == $$
-      #       raise ArgumentError, "Already running on PID:#{x} " \
-      #                            "(or pid=#{path} is stale)"
-      #     end
-      #   end
-      #   unlink_pid_safe(pid) if pid
-      # 
-      #   if path
-      #     fp = begin
-      #       tmp = "#{File.dirname(path)}/#{rand}.#$$"
-      #       File.open(tmp, File::RDWR|File::CREAT|File::EXCL, 0644)
-      #     rescue Errno::EEXIST
-      #       retry
-      #     end
-      #     fp.syswrite("#$$\n")
-      #     File.rename(fp.path, path)
-      #     fp.close
-      #   end
-      #   self.set_pid(path)
-      # end
       
       def monitor_memory_usage
         return if memory_limit.nil?

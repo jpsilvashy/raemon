@@ -15,13 +15,22 @@ class Test
   end
 
   def run
+    x = 0
+    
     loop do
-      logger.warn "I'm executing .. #{Process.ppid}:#{Process.pid}"
-      sleep 2
+      logger.warn "I'm executing #{x}.. #{Process.ppid}:#{Process.pid}"
+      
+      if x < 3
+        sleep 2
+      else
+        sleep 6
+      end
       
       heartbeat!
+      
+      x += 1
     end
   end
 end
 
-Raemon::Master.start 3, Test
+Raemon::Master.start 2, Test, :timeout => 5

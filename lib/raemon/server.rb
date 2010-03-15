@@ -106,6 +106,7 @@ module Raemon
       def running?
         pid = File.read(pid_file).to_i rescue 0
         Process.kill(0, pid) if pid > 0
+      rescue Errno::ESRCH
       end
     end
     
