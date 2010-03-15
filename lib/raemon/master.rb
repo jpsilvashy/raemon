@@ -74,7 +74,9 @@ module Raemon
       begin
         if Time.now.to_i > @last_pulse + (timeout/2) 
           # Pulse (our lifeline to the master process)
-          worker.pulse.chmod(@last_pulse = Time.now.to_i)
+          @last_pulse = Time.now.to_i
+          @p = 0 == @p ? 1 : 0
+          worker.pulse.chmod(@p)
 
           # Make sure master is still around otherwise exit
           master_pid == Process.ppid or return
