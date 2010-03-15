@@ -43,7 +43,8 @@ Gem::Specification.new do |s|
      "lib/raemon/master.rb",
      "lib/raemon/server.rb",
      "lib/raemon/util.rb",
-     "lib/raemon/worker.rb"
+     "lib/raemon/worker.rb",
+     "raemon.gemspec"
   ]
   s.homepage = %q{http://github.com/pkieltyka/raemon}
   s.rdoc_options = ["--charset=UTF-8"]
