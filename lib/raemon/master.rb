@@ -389,18 +389,19 @@ module Raemon
         File.open(pid_file, 'w') { |f| f.puts(Process.pid) } if pid_file
       end
       
+      # Check memory usage every 60 seconds if a memory limit is enforced
       def monitor_memory_usage
         return if memory_limit.nil?
+        @last_memory_chk ||= 0
 
-        @memory_timer ||= 60
-        if (@memory_timer -= 1) <= 0
+        if @last_memory_chk + 60 < Time.now.to_i
+          @last_memory_chk = Time.now.to_i
           WORKERS.dup.each_pair do |wpid, worker|
             if memory_usage(wpid) > (memory_limit*1024)
               logger.warn "memory limit (#{memory_limit}MB) reached by worker=#{worker.id}"
               kill_worker(:QUIT, wpid)
             end
           end
-          @memory_timer = nil
         end
       end
 
