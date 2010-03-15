@@ -12,18 +12,22 @@ class Test
 
   def stop
     logger.info "=> Stopping worker #{Process.pid}"
-    exit
   end
 
-  def execute
-    loop do
-      stop if shutting_down?
+  def runloop
+    # @x ||= 1
     
-      logger.warn "I'm executing .. #{Process.ppid}:#{Process.pid}"
-      sleep 2
-    end
+    logger.warn "I'm executing .. #{Process.ppid}:#{Process.pid}"
+    sleep 2
+    
+    # if @x < 4
+    #   sleep 2
+    # else
+    #   sleep 20
+    # end    
+    # @x += 1
   end
 
 end
 
-Raemon::Master.startup 3, Test
+Raemon::Master.start 3, Test

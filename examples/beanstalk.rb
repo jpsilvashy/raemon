@@ -17,12 +17,11 @@ class JobWorker
     logger.info "=> Stopping worker #{Process.pid}"
     
     @beanstalk.close
-    exit
   end
   
-  def execute
-    loop do
-      stop if shutting_down?
+  def runloop
+    # loop do
+      # stop if shutting_down?
     
       begin
         job = @beanstalk.reserve(2)
@@ -35,17 +34,17 @@ class JobWorker
         # process job here ...
         job.delete
       end
-    end
+    # end
   end
 
 end
 
 ROOT_DIR = File.expand_path('~')
 
-# Raemon::Master.startup 3, JobWorker, {
+# Raemon::Master.start 3, JobWorker, {
 #   :detach   => true,
 #   :logger   => Logger.new("#{ROOT_DIR}/beanstalk.log"),
 #   :pid_file => "#{ROOT_DIR}/beanstalk.pid"
 # }
 
-Raemon::Master.startup 3, JobWorker
+Raemon::Master.start 3, JobWorker
