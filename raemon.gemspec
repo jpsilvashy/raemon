@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{raemon}
-  s.version = "0.2.0"
+  s.version = "0.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Peter Kieltyka"]
-  s.date = %q{2010-03-15}
+  s.date = %q{2010-04-02}
   s.description = %q{Raemon is a Ruby framework for building UNIX daemons.}
   s.email = %q{peter.kieltyka@nulayer.com}
   s.extra_rdoc_files = [
