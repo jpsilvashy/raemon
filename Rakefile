@@ -1,17 +1,16 @@
 require 'rubygems'
 require 'rake'
+require 'rake/testtask'
+require 'rake/rdoctask'
+require 'rake/gempackagetask'
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name        = "raemon"
-    gem.summary     = "Raemon is a Ruby framework for building UNIX daemons."
-    gem.description = "Raemon is a Ruby framework for building UNIX daemons."
-    gem.email       = "peter.kieltyka@nulayer.com"
-    gem.homepage    = "http://github.com/pkieltyka/raemon"
-    gem.authors     = ["Peter Kieltyka"]
-  end
-  Jeweler::GemcutterTasks.new
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
+# Rake::TestTask.new do |test|
+#   test.libs << 'test'
+#   test.pattern = 'test/**/*_test.rb'
+#   test.verbose = true
+# end
+
+spec = eval(File.read('raemon.gemspec'))
+Rake::GemPackageTask.new(spec) do |pkg|
+  pkg.gem_spec = spec
 end
