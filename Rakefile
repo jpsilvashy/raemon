@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'rake'
 require 'rake/testtask'
-require 'rake/rdoctask'
+# require 'rake/rdoctask'
 require 'rake/gempackagetask'
 
 # Rake::TestTask.new do |test|
