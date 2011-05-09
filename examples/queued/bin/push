@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+######################################################
+# A small script to push some messages to the channel
+# when testing the redis-q daemon
+######################################################
+
+require 'bundler'
+Bundler.setup
+
+require 'beanstalk-client'
+
+queue = Beanstalk::Pool.new(['localhost:11300'])
+queue.use('work')
+queue.watch('work')
+
+20.times do |x|
+  queue.put({ :event => 'hello', :data => x })
+  # sleep 1
+end

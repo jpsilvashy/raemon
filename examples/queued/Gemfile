@@ -1,0 +1,10 @@
+source :rubygems
+
+gem 'raemon', :path => '../../'
+# gem 'raemon'
+
+gem 'beanstalk-client'
+
+group :development do
+  gem 'ruby-debug19'
+end

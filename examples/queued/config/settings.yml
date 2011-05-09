@@ -1,0 +1,14 @@
+development:
+    beanstalk:
+      host: localhost:11300
+      channel: work
+
+production:
+    beanstalk:
+      host: localhost:11300
+      channel: work
+  
+test:
+    beanstalk:
+      host: localhost:11300
+      channel: work

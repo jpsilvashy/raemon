@@ -7,7 +7,7 @@ tested on both 1.8.7 and 1.9.2 and carries no dependencies outside of the
 Ruby core. More to come.
 
 By: Peter Kieltyka
-Copyright (c) 2007-2010 NuLayer Inc. All rights reserved.
+Copyright (c) 2007-2011 Nulayer Inc. All rights reserved.
 
 Acknowledgements:
 Lots of code/ideas borrowed from the Unicorn project by Eric Wong to implement
@@ -50,23 +50,20 @@ that feel like a Ruby on Rails application. See examples/sampled.
 
 Installation
 ============
-Via gemcutter:
 $ gem install raemon
 
 From source:
 $ git clone git://github.com/nulayer/raemon.git
-$ cd raemon && rake build
-$ gem install pkg/raemon-X.X.X.gem
+$ cd raemon && rake install
 
 
 TODO
 ====
-1. Test cases
+1. Specs
 2. Create a UNIX socket connection between the master and workers
 3. Setup a heartbeat between the master and the workers
-4. Monitor memory usage of the workers in the master and restart/stop
-   a worker if its out of whack
-5. Write a daemon generator (as examples/sampled)
+4. Write a daemon generator (as examples/sampled)
+5. Instead of spawning processes, use GIL-free VM and native threads
 
 
 Thanks

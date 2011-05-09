@@ -7,6 +7,7 @@ when nil
 when 'start'
   ENV['RAEMON_ENV'] = 'production'
 when 'stop'
+  ENV['RAEMON_ENV'] = 'production'
   @shutdown = true
 end
 

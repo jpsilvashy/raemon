@@ -1,0 +1,45 @@
+# Logfile created on 2011-05-08 23:29:44 -0400 by logger.rb/25413
+I, [2011-05-08T23:32:08.977188 #65810]  INFO -- : => Booting Queued (production)
+I, [2011-05-08T23:32:08.991397 #65817]  INFO -- : => Starting Queued with 5 worker(s)
+I, [2011-05-08T23:32:08.992976 #65817]  INFO -- : master process ready
+I, [2011-05-08T23:32:09.001244 #65818]  INFO -- : worker=0 ready
+I, [2011-05-08T23:32:09.001899 #65818]  INFO -- : => Starting worker 65818
+I, [2011-05-08T23:32:09.005163 #65819]  INFO -- : worker=1 ready
+I, [2011-05-08T23:32:09.005933 #65819]  INFO -- : => Starting worker 65819
+I, [2011-05-08T23:32:09.006754 #65820]  INFO -- : worker=2 ready
+I, [2011-05-08T23:32:09.007464 #65820]  INFO -- : => Starting worker 65820
+I, [2011-05-08T23:32:09.012276 #65821]  INFO -- : worker=3 ready
+I, [2011-05-08T23:32:09.013304 #65821]  INFO -- : => Starting worker 65821
+I, [2011-05-08T23:32:09.016343 #65822]  INFO -- : worker=4 ready
+I, [2011-05-08T23:32:09.017070 #65822]  INFO -- : => Starting worker 65822
+I, [2011-05-08T23:32:16.766500 #65819]  INFO -- : {:event=>"hello", :data=>1}
+I, [2011-05-08T23:32:16.767293 #65818]  INFO -- : {:event=>"hello", :data=>0}
+I, [2011-05-08T23:32:16.767697 #65822]  INFO -- : {:event=>"hello", :data=>4}
+I, [2011-05-08T23:32:16.769336 #65820]  INFO -- : {:event=>"hello", :data=>2}
+I, [2011-05-08T23:32:16.770039 #65819]  INFO -- : {:event=>"hello", :data=>5}
+I, [2011-05-08T23:32:16.770265 #65822]  INFO -- : {:event=>"hello", :data=>6}
+I, [2011-05-08T23:32:16.772374 #65821]  INFO -- : {:event=>"hello", :data=>3}
+I, [2011-05-08T23:32:16.772959 #65820]  INFO -- : {:event=>"hello", :data=>7}
+I, [2011-05-08T23:32:16.773851 #65819]  INFO -- : {:event=>"hello", :data=>8}
+I, [2011-05-08T23:32:16.774545 #65821]  INFO -- : {:event=>"hello", :data=>9}
+I, [2011-05-08T23:32:16.775158 #65821]  INFO -- : {:event=>"hello", :data=>10}
+I, [2011-05-08T23:32:16.775837 #65818]  INFO -- : {:event=>"hello", :data=>11}
+I, [2011-05-08T23:32:16.776430 #65822]  INFO -- : {:event=>"hello", :data=>12}
+I, [2011-05-08T23:32:16.776801 #65820]  INFO -- : {:event=>"hello", :data=>13}
+I, [2011-05-08T23:32:16.777386 #65822]  INFO -- : {:event=>"hello", :data=>14}
+I, [2011-05-08T23:32:16.777974 #65822]  INFO -- : {:event=>"hello", :data=>15}
+I, [2011-05-08T23:32:16.778249 #65819]  INFO -- : {:event=>"hello", :data=>16}
+I, [2011-05-08T23:32:16.778264 #65818]  INFO -- : {:event=>"hello", :data=>17}
+I, [2011-05-08T23:32:16.779238 #65818]  INFO -- : {:event=>"hello", :data=>18}
+I, [2011-05-08T23:32:16.779800 #65818]  INFO -- : {:event=>"hello", :data=>19}
+I, [2011-05-08T23:33:12.384923 #65821]  INFO -- : => Stopping worker 65821
+I, [2011-05-08T23:33:12.385154 #65820]  INFO -- : => Stopping worker 65820
+I, [2011-05-08T23:33:12.384922 #65819]  INFO -- : => Stopping worker 65819
+I, [2011-05-08T23:33:12.385195 #65822]  INFO -- : => Stopping worker 65822
+I, [2011-05-08T23:33:12.393945 #65818]  INFO -- : => Stopping worker 65818
+I, [2011-05-08T23:33:12.576292 #65817]  INFO -- : reaped #<Process::Status: pid 65822 exit 0> worker=4
+I, [2011-05-08T23:33:12.577568 #65817]  INFO -- : reaped #<Process::Status: pid 65821 exit 0> worker=3
+I, [2011-05-08T23:33:12.577717 #65817]  INFO -- : reaped #<Process::Status: pid 65820 exit 0> worker=2
+I, [2011-05-08T23:33:12.577859 #65817]  INFO -- : reaped #<Process::Status: pid 65819 exit 0> worker=1
+I, [2011-05-08T23:33:12.578011 #65817]  INFO -- : reaped #<Process::Status: pid 65818 exit 0> worker=0
+I, [2011-05-08T23:33:12.578198 #65817]  INFO -- : master complete

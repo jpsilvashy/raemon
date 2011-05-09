@@ -1,16 +1,11 @@
-require 'rubygems'
-require 'rake'
-require 'rake/testtask'
-# require 'rake/rdoctask'
-require 'rake/gempackagetask'
+require 'bundler'
+Bundler::GemHelper.install_tasks
 
-# Rake::TestTask.new do |test|
-#   test.libs << 'test'
-#   test.pattern = 'test/**/*_test.rb'
-#   test.verbose = true
+require 'rspec/core/rake_task'
+
+# RSpec::Core::RakeTask.new(:spec) do |t|
+#   t.rspec_opts = ["-c", "-f progress", "-r ./spec/spec_helper.rb"]
+#   t.pattern = 'spec/**/*_spec.rb'
 # end
 
-spec = eval(File.read('raemon.gemspec'))
-Rake::GemPackageTask.new(spec) do |pkg|
-  pkg.gem_spec = spec
-end
+# task :default => :spec

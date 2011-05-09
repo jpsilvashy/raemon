@@ -6,8 +6,8 @@
 require File.join(File.dirname(__FILE__), 'boot')
 
 Raemon::Server.run do |config|
-  config.name         = 'Sampled'
-  config.worker_klass = 'Sampled::Worker'
+  config.name         = 'Queued'
+  config.worker_klass = 'Queued::Worker'
   config.num_workers  = 1
   config.timeout      = 60
   config.memory_limit = 50 # in MB

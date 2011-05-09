@@ -1,8 +1,8 @@
-version = File.read("VERSION").strip
+require File.expand_path("../lib/raemon/version", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'raemon'
-  s.version     = version
+  s.version     = Raemon::VERSION
   s.platform    = Gem::Platform::RUBY
   s.summary     = "Raemon is a Ruby framework for building UNIX daemons"
   s.description = "Raemon is a Ruby framework for building UNIX daemons"
