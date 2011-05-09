@@ -13,7 +13,7 @@ queue = Beanstalk::Pool.new(['localhost:11300'])
 queue.use('work')
 queue.watch('work')
 
-20.times do |x|
+2000.times do |x|
   queue.put({ :event => 'hello', :data => x })
   # sleep 1
 end

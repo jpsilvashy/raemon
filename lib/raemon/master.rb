@@ -182,7 +182,7 @@ module Raemon
         end
       end
       
-      # wait for a signal hander to wake us up and then consume the pipe
+      # wait for a signal handler to wake us up and then consume the pipe
       # Wake up every second anyways to run murder_lazy_workers
       def master_sleep
         begin
@@ -216,7 +216,7 @@ module Raemon
         end
       end
 
-      # forcibly terminate all workers that haven't checked in in timeout
+      # forcibly terminate all workers that haven't checked-in in timeout
       # seconds.  The timeout is implemented using an unlinked File
       # shared between the parent process and each worker.  The worker
       # runs File#chmod to modify the ctime of the File.  If the ctime
@@ -243,8 +243,7 @@ module Raemon
         end
       end
 
-      # Spawn workers, and initalize new workers if some are
-      # no longer running
+      # Spawn workers, and initalize new workers if some are no longer running
       def spawn_workers
         (0...num_workers).each do |id|
           WORKERS.values.include?(id) and next
@@ -293,7 +292,7 @@ module Raemon
         SIG_QUEUE.clear
         process_name "worker[#{worker.id}]"
 
-        init_self_pipe!        
+        init_self_pipe!
         WORKERS.values.each { |other_worker| other_worker.pulse.close rescue nil }
         WORKERS.clear
 

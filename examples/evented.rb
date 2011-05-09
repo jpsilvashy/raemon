@@ -1,3 +1,7 @@
+####################################################################
+# Simple queue daemon example
+# Using asynchronous Beanstalk Ruby driver (em-jack)
+####################################################################
 $:.unshift ::File.dirname(__FILE__) + '/../lib'
 
 require 'rubygems'
