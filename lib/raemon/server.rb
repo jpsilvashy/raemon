@@ -84,11 +84,7 @@ module Raemon
       end
       
       def load_folder(path)
-        Dir.entries(path).each do |lib_file|
-          if lib_file != '.' && lib_file != '..'
-            require "#{path}/#{lib_file}"
-          end
-        end
+        Dir["#{path}/**/*.rb"].each { |file| require(file) }
       end
       
       def server_name
