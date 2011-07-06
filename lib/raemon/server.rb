@@ -61,11 +61,7 @@ module Raemon
           config.logger = Logger.new(STDOUT)
         end
 
-        # Set the logger level
-        config.logger.level = instance_eval("Logger::#{config.log_level.to_s.upcase}")
-
-        # TODO: format the logger
-        # config.logger.formatter
+        config.logger.level = Logger.const_get(config.log_level.to_s.upcase)
       end
 
       def load_environment
