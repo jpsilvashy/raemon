@@ -6,10 +6,6 @@ module Raemon
       Raemon::Configuration
     end
 
-    def run
-      yield config if block_given?
-    end
-
     def startup!
       initialize_application
 
