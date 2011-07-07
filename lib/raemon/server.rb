@@ -78,10 +78,6 @@ module Raemon
         load_folder libdir
       end
 
-      def load_folder(path)
-        Dir["#{path}/**/*.rb"].each { |file| require(file) }
-      end
-
       def server_name
         @server_name = config.name || 'Raemon'
       end
@@ -98,6 +94,12 @@ module Raemon
         pid = File.read(pid_file).to_i rescue 0
         Process.kill(0, pid) if pid > 0
       rescue Errno::ESRCH
+      end
+
+      private
+
+      def load_folder(path)
+        Dir["#{path}/**/*.rb"].each { |file| require(file) }
       end
     end
   end
