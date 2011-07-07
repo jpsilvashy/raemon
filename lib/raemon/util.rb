@@ -4,7 +4,7 @@ module Raemon
     # immediately, switched to binary mode, and userspace output
     # buffering is disabled. Method pulled from Unicorn library.
     def self.tmpio
-      tmp_path = File.join(Dir.tmpdir, rand)
+      tmp_path = File.join(Dir.tmpdir, rand.to_s)
 
       begin
         fp = File.open(tmp_path, File::RDWR | File::CREAT | File::EXCL, 0600)

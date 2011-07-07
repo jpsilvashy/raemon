@@ -11,7 +11,7 @@ module Raemon
         @master = master
         @logger = master.logger
         @id     = id
-        @pid    = $$
+        @pid    = Process.pid
         @pulse  = pulse
         super
       end
