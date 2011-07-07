@@ -58,15 +58,15 @@ module Raemon
 
     # @param [String] root The root path for this application
     def root=(root)
-      @_root = root
+      @root = root
     end
 
     # @return [Pathname] the root path for this application
     def root
-      if @_root.nil?
+      if @root.nil?
         raise 'Raemon::Config.root must be set'
       else
-        Pathname.new(@_root).expand_path
+        Pathname.new(@root).expand_path
       end
     end
   end
