@@ -21,7 +21,7 @@ module Raemon
       end
 
       def run
-        raise "Abstract method"
+        raise NotImplementedError, "must be implemented in your class"
       end
 
       def heartbeat!
