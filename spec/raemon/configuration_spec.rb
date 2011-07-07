@@ -25,7 +25,7 @@ describe Raemon::Configuration do
 
   its(:name) { should == described_class::DEFAULT_NAME }
 
-  its(:detatch) { should == described_class::DEFAULT_DETATCH }
+  its(:detach) { should == described_class::DEFAULT_DETACH }
 
   its(:num_workers) { should == described_class::DEFAULT_NUM_WORKERS }
 

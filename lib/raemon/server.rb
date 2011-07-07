@@ -49,7 +49,7 @@ module Raemon
     end
 
     def initialize_logger
-      if config.detach
+      if config.detach?
         config.logger = ::Logger.new("#{RAEMON_ROOT}/log/#{server_name_key}.log")
       end
     end

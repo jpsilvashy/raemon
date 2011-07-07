@@ -8,7 +8,7 @@ module Raemon
 
     DEFAULT_NAME = "Raemon"
 
-    DEFAULT_DETATCH = false
+    DEFAULT_DETACH = false
 
     DEFAULT_NUM_WORKERS = 1
 
@@ -40,7 +40,7 @@ module Raemon
 
     option :name, :default => DEFAULT_NAME
 
-    option :detatch, :default => DEFAULT_DETATCH
+    option :detach, :default => DEFAULT_DETACH
 
     option :num_workers, :default => DEFAULT_NUM_WORKERS
 
