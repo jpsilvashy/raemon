@@ -8,6 +8,9 @@ module Raemon
 
     CHUNK_SIZE = (16*1024)
 
+    # list of signals we care about and trap in master.
+    QUEUE_SIGS = [ :WINCH, :QUIT, :INT, :TERM, :USR1, :USR2, :HUP, :TTIN, :TTOU ]
+
     attr_accessor :name, :num_workers, :worker_klass,
                   :master_pid, :pid_file,
                   :logger, :timeout, :memory_limit
@@ -88,7 +91,6 @@ module Raemon
         end
       end
     end
-
 
     private
 
