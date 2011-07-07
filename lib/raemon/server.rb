@@ -11,14 +11,39 @@ module Raemon
       initialize_logger
     end
 
+    # Start the master daemon. Exits the script if the master daemon is
+    # already running.
     def startup!
-      # Check if the server is already running
+      stop_if_running!
+      start_master_daemon
+    end
+
+    # Stop the master daemon
+    def shutdown!
+      stop_master_daemon
+    end
+
+    # @return [Pathname] the target PID file
+    def pid_file
+      config.root.join("tmp/pids/#{server_name_key}.pid")
+    end
+
+    private
+
+    def running?
+      pid = File.read(pid_file).to_i rescue 0
+      Process.kill(0, pid) if pid > 0
+    rescue Errno::ESRCH
+    end
+
+    def stop_if_running!
       if running?
         config.logger.error "Error: #{config.server_name} is already running."
         exit
       end
+    end
 
-      # Start the master daemon
+    def start_master_daemon
       config.logger.info "=> Booting #{config.server_name} (#{config.env})"
 
       Raemon::Master.start(config.num_workers, worker_class, {
@@ -31,39 +56,27 @@ module Raemon
       })
     end
 
-    def shutdown!
+    def stop_master_daemon
       Raemon::Master.stop(:pid_file => pid_file)
     end
 
-    def pid_file
-      "#{RAEMON_ROOT}/tmp/pids/#{server_name_key}.pid"
-    end
-
-    def running?
-      pid = File.read(pid_file).to_i rescue 0
-      Process.kill(0, pid) if pid > 0
-    rescue Errno::ESRCH
-    end
-
-    private
-
     def initialize_logger
       if config.detach?
-        config.logger = ::Logger.new("#{RAEMON_ROOT}/log/#{server_name_key}.log")
+        config.logger = ::Logger.new(config.root.join("log/#{server_name_key}.log"))
       end
     end
 
     def load_environment
-      environment_file = "#{RAEMON_ROOT}/config/environments/#{RAEMON_ENV}.rb"
+      environment_file = config.root.join("environments/#{config.env}.rb")
       eval File.read(environment_file), binding
     end
 
     def load_initializers
-      load_folder "#{RAEMON_ROOT}/config/initializers"
+      load_folder(config.root.join("config/initializers"))
     end
 
     def load_lib
-      libdir = "#{RAEMON_ROOT}/lib"
+      libdir = config.root.join("lib")
       $LOAD_PATH.unshift libdir
       load_folder libdir
     end

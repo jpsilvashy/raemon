@@ -29,4 +29,28 @@ describe Raemon::Server do
       subject.boot!
     end
   end
+
+  describe '.startup!' do
+    before(:all) do
+      # Stupid config to silence some aspects we don't care about
+      Raemon.config do |c|
+        c.worker_class = 'String'
+      end
+    end
+
+    before(:each) do
+      Raemon::Master.stub(:start)
+    end
+
+    it 'starts the master daemon' do
+      Raemon::Master.should_receive(:start)
+      subject.startup!
+    end
+
+    it 'stops the script if the master daemon is already running' do
+      subject.stub(:running?) { true }
+      subject.should_receive(:exit)
+      subject.startup!
+    end
+  end
 end
