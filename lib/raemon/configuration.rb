@@ -1,12 +1,10 @@
-RAEMON_ENV = (ENV['RAEMON_ENV'] || 'development').dup unless defined?(RAEMON_ENV)
-
 module Raemon
   ##
   # Manages configuration settings and defaults
   module Configuration
     extend self
 
-    DEFAULT_SERVER_NAME = "Raemon"
+    DEFAULT_SERVER_NAME = 'Raemon'
 
     DEFAULT_DETACH = false
 
@@ -15,6 +13,8 @@ module Raemon
     DEFAULT_TIMEOUT = 3 * 60 # 3 minutes
 
     DEFAULT_MEMORY_LIMIT_IN_MEGABYTES = 50
+
+    DEFAULT_ENVIRONMENT = 'development'
 
     attr_accessor :settings
     @settings = {}
@@ -50,7 +50,7 @@ module Raemon
 
     option :timeout, :default => DEFAULT_TIMEOUT
 
-    option :env, :default => RAEMON_ENV
+    option :env, :default => DEFAULT_ENVIRONMENT
 
     option :memory_limit, :default => DEFAULT_MEMORY_LIMIT_IN_MEGABYTES
 
