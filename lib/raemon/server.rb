@@ -4,10 +4,23 @@ module Raemon
   module Server
     extend self
 
-    attr_accessor :config
+    def config
+      Raemon::Configuration
+    end
+
+    def server_name
+      config.name
+    end
+
+    def server_name_key
+      server_name.downcase.gsub(' ', '_')
+    end
+
+    def worker_class
+      instance_eval(config.worker_class)
+    end
 
     def run
-      @config = Configuration.new if config.nil?
       yield config if block_given?
     end
 
@@ -23,16 +36,14 @@ module Raemon
       # Start the master daemon
       config.logger.info "=> Booting #{server_name} (#{RAEMON_ENV})"
 
-      worker_klass = instance_eval(config.worker_klass)
-
-      Raemon::Master.start config.num_workers, worker_klass, {
+      Raemon::Master.start(config.num_workers, worker_class, {
         :name         => server_name,
         :pid_file     => pid_file,
         :detach       => config.detach,
         :logger       => config.logger,
         :timeout      => config.timeout,
         :memory_limit => config.memory_limit
-      }
+      })
     end
 
     def shutdown!
@@ -52,16 +63,9 @@ module Raemon
     end
 
     def initialize_logger
-      return if !config.logger.nil?
-
-      # Create our own logger if one wasn't provided
       if config.detach
-        config.logger = Logger.new("#{RAEMON_ROOT}/log/#{server_name_key}.log")
-      else
-        config.logger = Logger.new(STDOUT)
+        config.logger = ::Logger.new("#{RAEMON_ROOT}/log/#{server_name_key}.log")
       end
-
-      config.logger.level = Logger.const_get(config.log_level.to_s.upcase)
     end
 
     def load_environment
@@ -77,14 +81,6 @@ module Raemon
       libdir = "#{RAEMON_ROOT}/lib"
       $LOAD_PATH.unshift libdir
       load_folder libdir
-    end
-
-    def server_name
-      @server_name = config.name || 'Raemon'
-    end
-
-    def server_name_key
-      server_name.downcase.gsub(' ', '_')
     end
 
     def pid_file
