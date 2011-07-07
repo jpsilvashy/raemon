@@ -10,10 +10,7 @@ Bundler.setup
 require 'beanstalk-client'
 
 queue = Beanstalk::Pool.new(['localhost:11300'])
-queue.use('work')
-queue.watch('work')
 
 2000.times do |x|
-  queue.put({ :event => 'hello', :data => x })
-  # sleep 1
+  queue.put(:event => 'hello', :data => x)
 end

@@ -11,13 +11,13 @@ module Raemon
     # list of signals we care about and trap in master.
     QUEUE_SIGS = [ :WINCH, :QUIT, :INT, :TERM, :USR1, :USR2, :HUP, :TTIN, :TTOU ]
 
-    attr_accessor :name, :num_workers, :worker_klass,
+    attr_accessor :name, :num_workers, :worker_class,
                   :master_pid, :pid_file,
                   :logger, :timeout, :memory_limit
 
-    def self.start(num_workers, worker_klass, options={})
+    def self.start(num_workers, worker_class, options={})
       master = new(options)
-      master.start(num_workers, worker_klass)
+      master.start(num_workers, worker_class)
     end
 
     def self.stop(options={})
@@ -38,15 +38,15 @@ module Raemon
       daemonize if @detach
     end
 
-    def start(num_workers, worker_klass)
+    def start(num_workers, worker_class)
       logger.info "=> Starting #{name} with #{num_workers} worker(s)"
 
-      @master_pid   = $$
+      @master_pid   = Process.pid
       @num_workers  = num_workers
-      @worker_klass = worker_klass
+      @worker_class = worker_class
 
       # Check if the worker implements our interface
-      if !worker_klass.include?(Raemon::Worker)
+      if !worker_class.include?(Raemon::Worker)
         logger.error "** Invalid Raemon worker"
         logger.close
         exit
@@ -245,7 +245,7 @@ module Raemon
       def spawn_workers
         (0...num_workers).each do |id|
           WORKERS.values.include?(id) and next
-          worker = worker_klass.new(self, id, Raemon::Util.tmpio)
+          worker = worker_class.new(self, id, Raemon::Util.tmpio)
 
           # Fork the worker processes wrapped in the worker loop
           WORKERS[fork { worker_loop!(worker) }] = worker
