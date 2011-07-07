@@ -15,7 +15,7 @@ module Raemon
 
       # Check if the server is already running
       if running?
-        $stderr.puts "Error: #{server_name} is already running."
+        config.logger.error "Error: #{server_name} is already running."
         exit
       end
 
