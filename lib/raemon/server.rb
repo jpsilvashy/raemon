@@ -68,7 +68,7 @@ module Raemon
     end
 
     def load_environment
-      environment_file = config.root.join("environments/#{config.env}.rb")
+      environment_file = config.root.join("config/environments/#{config.env}.rb")
       eval File.read(environment_file), binding
     end
 
