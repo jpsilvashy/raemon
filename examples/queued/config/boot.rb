@@ -21,7 +21,6 @@ module Raemon
             
       # Boot!
       require 'raemon'
-      Raemon::Server.run
     end
     
     def load_vendor_libs
