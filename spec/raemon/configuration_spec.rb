@@ -38,4 +38,24 @@ describe Raemon::Configuration do
   its(:env) { should == RAEMON_ENV }
 
   its(:memory_limit) { should == described_class::DEFAULT_MEMORY_LIMIT_IN_MEGABYTES }
+
+  describe '.root=' do
+    it 'sets the root location of the project' do
+      described_class.root = '.'
+      described_class.root.to_s.should == File.expand_path('.')
+    end
+  end
+
+  describe '.root' do
+    it 'is a Pathname' do
+      described_class.root.should be_a(Pathname)
+    end
+
+    it 'raises an exception when not set' do
+      expect {
+        described_class.root = nil
+        described_class.root
+      }.to raise_error(StandardError, 'Raemon::Config.root must be set')
+    end
+  end
 end

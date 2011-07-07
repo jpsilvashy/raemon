@@ -55,5 +55,19 @@ module Raemon
     option :memory_limit, :default => DEFAULT_MEMORY_LIMIT_IN_MEGABYTES
 
     option :worker_class
+
+    # @param [String] root The root path for this application
+    def root=(root)
+      @_root = root
+    end
+
+    # @return [Pathname] the root path for this application
+    def root
+      if @_root.nil?
+        raise 'Raemon::Config.root must be set'
+      else
+        Pathname.new(@_root).expand_path
+      end
+    end
   end
 end
