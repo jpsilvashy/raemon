@@ -10,5 +10,10 @@ end
 require 'raemon'
 
 RSpec.configure do |config|
-  # Nothing for now
+  config.before(:all) do
+    Raemon.config do |c|
+      c.root   = '.'
+      c.logger = ::Logger.new('/dev/null')
+    end
+  end
 end
