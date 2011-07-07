@@ -30,72 +30,72 @@ module Raemon
 
     private
 
-    def running?
-      pid = File.read(pid_file).to_i rescue 0
-      Process.kill(0, pid) if pid > 0
-    rescue Errno::ESRCH
-    end
-
-    def stop_if_running!
-      if running?
-        config.logger.error "Error: #{config.server_name} is already running."
-        exit
+      def running?
+        pid = File.read(pid_file).to_i rescue 0
+        Process.kill(0, pid) if pid > 0
+      rescue Errno::ESRCH
       end
-    end
 
-    def start_master_daemon
-      config.logger.info "=> Booting #{config.server_name} (#{config.env})"
-
-      Raemon::Master.start(config.num_workers, worker_class, {
-        :name         => config.server_name,
-        :pid_file     => pid_file,
-        :detach       => config.detach,
-        :logger       => config.logger,
-        :timeout      => config.timeout,
-        :memory_limit => config.memory_limit
-      })
-    end
-
-    def stop_master_daemon
-      Raemon::Master.stop(:pid_file => pid_file)
-    end
-
-    def initialize_logger
-      if config.detach?
-        config.logger = ::Logger.new(config.root.join("log/#{server_name_key}.log"))
+      def stop_if_running!
+        if running?
+          config.logger.error "Error: #{config.server_name} is already running."
+          exit
+        end
       end
-    end
 
-    def load_environment
-      environment_file = config.root.join("config/environments/#{config.env}.rb")
-      eval File.read(environment_file), binding
-    end
+      def start_master_daemon
+        config.logger.info "=> Booting #{config.server_name} (#{config.env})"
 
-    def load_initializers
-      load_folder(config.root.join("config/initializers"))
-    end
+        Raemon::Master.start(config.num_workers, worker_class, {
+          :name         => config.server_name,
+          :pid_file     => pid_file,
+          :detach       => config.detach,
+          :logger       => config.logger,
+          :timeout      => config.timeout,
+          :memory_limit => config.memory_limit
+        })
+      end
 
-    def load_lib
-      libdir = config.root.join("lib")
+      def stop_master_daemon
+        Raemon::Master.stop(:pid_file => pid_file)
+      end
 
-      $LOAD_PATH.unshift libdir
-      load_folder libdir
-    end
+      def initialize_logger
+        if config.detach?
+          config.logger = ::Logger.new(config.root.join("log/#{server_name_key}.log"))
+        end
+      end
 
-    def config
-      Raemon::Configuration
-    end
+      def load_environment
+        environment_file = config.root.join("config/environments/#{config.env}.rb")
+        eval File.read(environment_file), binding
+      end
 
-    def load_folder(path)
-      Dir["#{path}/**/*.rb"].each { |file| require(file) }
-    end
+      def load_initializers
+        load_folder(config.root.join("config/initializers"))
+      end
 
-    def server_name_key
-      config.server_name.downcase.gsub(' ', '_')
-    end
+      def load_lib
+        libdir = config.root.join("lib")
 
-    def worker_class
-      instance_eval(config.worker_class)
-    end
+        $LOAD_PATH.unshift libdir
+        load_folder libdir
+      end
+
+      def config
+        Raemon::Configuration
+      end
+
+      def load_folder(path)
+        Dir["#{path}/**/*.rb"].each { |file| require(file) }
+      end
+
+      def server_name_key
+        config.server_name.downcase.gsub(' ', '_')
+      end
+
+      def worker_class
+        instance_eval(config.worker_class)
+      end
   end
 end

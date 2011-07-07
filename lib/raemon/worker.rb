@@ -13,7 +13,6 @@ module Raemon
         @id     = id
         @pid    = Process.pid
         @pulse  = pulse
-        super
       end
 
       def ==(other_id)
