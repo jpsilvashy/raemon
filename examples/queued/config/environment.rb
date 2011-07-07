@@ -1,14 +1,18 @@
 # Be sure to restart your daemon when you modify this file
+require 'rubygems'
+require 'bundler'
 
-# Uncomment below to force your daemon into production mode
-#ENV['RAEMON_ENV'] ||= 'production'
+Bundler.setup
 
-require File.join(File.dirname(__FILE__), 'boot')
+require 'raemon'
 
-Raemon::Server.run do |config|
+Raemon.config do |config|
   config.server_name  = 'Queued'
   config.worker_class = 'Queued::Worker'
   config.num_workers  = 1
-  config.timeout      = 60
-  config.memory_limit = 50 # in MB
+  config.root         = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 end
+
+Bundler.require(:default, Raemon.env)
+
+Raemon::Server.boot!
