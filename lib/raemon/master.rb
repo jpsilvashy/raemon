@@ -7,23 +7,23 @@ module Raemon
     SIG_QUEUE = []
 
     CHUNK_SIZE = (16*1024)
-    
+
     attr_accessor :name, :num_workers, :worker_klass,
                   :master_pid, :pid_file,
                   :logger, :timeout, :memory_limit
-    
+
     def self.start(num_workers, worker_klass, options={})
       master = new(options)
       master.start(num_workers, worker_klass)
     end
-    
+
     def self.stop(options={})
       pid_file = options[:pid_file]
       pid = options[:pid] || (File.read(pid_file).to_i rescue 0)
       Process.kill('QUIT', pid) if pid > 0
     rescue Errno::ESRCH
     end
-    
+
     def initialize(options={})
       @detach         = options[:detach] || false
       @name           = options[:name] || 'Raemon'
@@ -31,28 +31,28 @@ module Raemon
       @logger         = options[:logger] || Logger.new(STDOUT)
       @timeout        = options[:timeout] || 180 # 3 minutes
       @memory_limit   = options[:memory_limit] # in MB
-      
+
       daemonize if @detach
     end
-    
+
     def start(num_workers, worker_klass)
       logger.info "=> Starting #{name} with #{num_workers} worker(s)"
 
       @master_pid   = $$
       @num_workers  = num_workers
       @worker_klass = worker_klass
-      
+
       # Check if the worker implements our interface
       if !worker_klass.include?(Raemon::Worker)
         logger.error "** Invalid Raemon worker"
         logger.close
         exit
       end
-      
+
       # Start the master loop which spawns and monitors workers
       master_loop!
     end
-    
+
     # Terminates all workers, but does not exit master process
     def stop(graceful=true)
       kill_each_worker(graceful ? :QUIT : :TERM)
@@ -66,13 +66,13 @@ module Raemon
         kill_each_worker(:KILL)
       end
     end
-    
+
     def worker_heartbeat!(worker)
       return if timeout <= 0
       @last_pulse ||= 0
-      
+
       begin
-        if Time.now.to_i > @last_pulse + (timeout/2) 
+        if Time.now.to_i > @last_pulse + (timeout/2)
           # Pulse (our lifeline to the master process)
           @last_pulse = Time.now.to_i
           @p = 0 == @p ? 1 : 0
@@ -88,13 +88,9 @@ module Raemon
         end
       end
     end
-    
-    
-    private
-        
-      # list of signals we care about and trap in master.
-      QUEUE_SIGS = [ :WINCH, :QUIT, :INT, :TERM, :USR1, :USR2, :HUP, :TTIN, :TTOU ]
 
+
+    private
 
       # monitors children and receives signals forever
       # (or until a termination signal is sent).  This handles signals
@@ -108,13 +104,13 @@ module Raemon
 
         QUEUE_SIGS.each { |sig| trap_deferred(sig) }
         trap(:CHLD) { |sig_nr| awaken_master }
-        
+
         process_name 'master'
         logger.info "master process ready"
-        
+
         # Spawn workers for the first time
         maintain_worker_count
-        
+
         begin
           loop do
             monitor_memory_usage
@@ -159,11 +155,11 @@ module Raemon
           logger.error ex.backtrace.join("\n")
           retry
         end
-        
+
         # Gracefully shutdown all workers on our way out
         stop
         logger.info "master complete"
-        
+
         # Close resources
         unlink_pid_safe(pid_file) if pid_file
         logger.close
@@ -181,7 +177,7 @@ module Raemon
           end
         end
       end
-      
+
       # wait for a signal handler to wake us up and then consume the pipe
       # Wake up every second anyways to run murder_lazy_workers
       def master_sleep
@@ -192,7 +188,7 @@ module Raemon
         rescue Errno::EAGAIN, Errno::EINTR
         end
       end
-    
+
       def awaken_master
         begin
           SELF_PIPE.last.write_nonblock('.') # wakeup master process from select
@@ -224,9 +220,9 @@ module Raemon
       # worker.
       def murder_lazy_workers
         return if timeout <= 0
-        
+
         diff = stat = nil
-        
+
         WORKERS.dup.each_pair do |wpid, worker|
           begin
             stat = worker.pulse.stat
@@ -274,7 +270,7 @@ module Raemon
         else
           @spawn_attempts = nil
         end
-        
+
         return spawn_workers if off > 0
 
         WORKERS.dup.each_pair do |wpid, worker|
@@ -299,7 +295,7 @@ module Raemon
         worker.pulse.fcntl(Fcntl::F_SETFD, Fcntl::FD_CLOEXEC)
         @timeout /= 2.0 # halve it for select
       end
-      
+
       # runs inside each forked worker, this sits around and waits
       # for connections and doesn't die until the parent dies (or is
       # given a INT, QUIT, or TERM signal)
@@ -311,18 +307,18 @@ module Raemon
           worker.stop if worker.respond_to?(:stop)
           exit!(0)
         end
-        
+
         # Immediate termination
         [:TERM, :INT].each { |sig| trap(sig) { exit!(0) } }
-        
+
         # Worker start
         logger.info "worker=#{worker.id} ready"
         worker.start if worker.respond_to?(:start)
-        
+
         # Worker run loop
         worker.run
       end
-      
+
       # delivers a signal to a worker and fails gracefully if the worker
       # is no longer running.
       def kill_worker(signal, wpid)
@@ -377,19 +373,19 @@ module Raemon
 
       def daemonize
         exit if Process.fork
-      
+
         Process.setsid
-    
+
         Dir.chdir '/'
         File.umask 0000
 
         STDIN.reopen '/dev/null'
         STDOUT.reopen '/dev/null', 'a'
         STDERR.reopen '/dev/null', 'a'
-      
+
         File.open(pid_file, 'w') { |f| f.puts(Process.pid) } if pid_file
       end
-      
+
       # Check memory usage every 60 seconds if a memory limit is enforced
       def monitor_memory_usage
         return if memory_limit.nil?
@@ -409,6 +405,5 @@ module Raemon
       def memory_usage(pid)
         `ps -o rss= -p #{pid}`.to_i
       end
-    
   end
 end
