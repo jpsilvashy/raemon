@@ -42,11 +42,6 @@ describe Raemon::Server do
       Raemon::Master.stub(:start)
     end
 
-    it 'boots the environment' do
-      subject.should_receive(:boot!)
-      subject.startup!
-    end
-
     it 'starts the master daemon' do
       Raemon::Master.should_receive(:start)
       subject.startup!
