@@ -14,6 +14,7 @@ module Raemon
     # Start the master daemon. Exits the script if the master daemon is
     # already running.
     def startup!
+      boot!
       stop_if_running!
       start_master_daemon
     end

@@ -25,4 +25,12 @@ module Raemon
   def self.config
     block_given? and yield Configuration or Configuration
   end
+
+  def self.env
+    config.env
+  end
+
+  def self.env=(env)
+    config.env = env
+  end
 end
