@@ -1,7 +1,5 @@
 # -*- encoding: utf-8 -*-
-lib = File.expand_path('../lib', __FILE__)
-$:.unshift(lib) unless $:.include?(lib)
-
+$:.push File.expand_path('../lib', __FILE__)
 require 'raemon/version'
 
 Gem::Specification.new do |s|

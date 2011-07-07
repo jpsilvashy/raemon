@@ -38,4 +38,8 @@ module Raemon
   def self.root
     config.root
   end
+  
+  def self.root=(root)
+    config.root = root
+  end
 end
