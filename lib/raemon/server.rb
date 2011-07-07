@@ -2,10 +2,6 @@ module Raemon
   module Server
     extend self
 
-    def config
-      Raemon::Configuration
-    end
-
     def startup!
       initialize_application
 
@@ -76,6 +72,10 @@ module Raemon
     end
 
     private
+
+    def config
+      Raemon::Configuration
+    end
 
     def load_folder(path)
       Dir["#{path}/**/*.rb"].each { |file| require(file) }
