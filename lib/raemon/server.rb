@@ -6,18 +6,6 @@ module Raemon
       Raemon::Configuration
     end
 
-    def server_name
-      config.name
-    end
-
-    def server_name_key
-      server_name.downcase.gsub(' ', '_')
-    end
-
-    def worker_class
-      instance_eval(config.worker_class)
-    end
-
     def run
       yield config if block_given?
     end
@@ -32,10 +20,10 @@ module Raemon
       end
 
       # Start the master daemon
-      config.logger.info "=> Booting #{server_name} (#{RAEMON_ENV})"
+      config.logger.info "=> Booting #{server_name} (#{config.env})"
 
       Raemon::Master.start(config.num_workers, worker_class, {
-        :name         => server_name,
+        :name         => config.name,
         :pid_file     => pid_file,
         :detach       => config.detach,
         :logger       => config.logger,
@@ -95,6 +83,14 @@ module Raemon
 
     def load_folder(path)
       Dir["#{path}/**/*.rb"].each { |file| require(file) }
+    end
+
+    def server_name_key
+      config.name.downcase.gsub(' ', '_')
+    end
+
+    def worker_class
+      instance_eval(config.worker_class)
     end
   end
 end
