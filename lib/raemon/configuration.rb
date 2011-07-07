@@ -1,5 +1,9 @@
 module Raemon
-  class Configuration
+  ##
+  # Manages configuration settings and defaults
+  module Configuration
+    extend self
+
     ATTRIBUTES = [ :name, :detach, :num_workers, :worker_klass,
                    :log_level, :logger, :timeout, :memory_limit ]
 
