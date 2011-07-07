@@ -19,7 +19,8 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
 
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec',     ['~> 2.6.0']
-  s.add_development_dependency 'simplecov', ['~> 0.4.2']
-  s.add_development_dependency 'em-jack',   ['~> 0.1.3']
+  s.add_development_dependency 'rspec',            ['~> 2.6.0']
+  s.add_development_dependency 'simplecov',        ['~> 0.4.2']
+  s.add_development_dependency 'em-jack',          ['~> 0.1.3']
+  s.add_development_dependency 'beanstalk-client', ['~> 1.1.0']
 end
