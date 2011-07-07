@@ -14,6 +14,8 @@ module Raemon
 
     DEFAULT_TIMEOUT = 3 * 60 # 3 minutes
 
+    DEFAULT_MEMORY_LIMIT_IN_MEGABYTES = 50
+
     attr_accessor :settings
     @settings = {}
 
@@ -50,8 +52,8 @@ module Raemon
 
     option :env, :default => RAEMON_ENV
 
-    option :worker_class
+    option :memory_limit, :default => DEFAULT_MEMORY_LIMIT_IN_MEGABYTES
 
-    option :memory_limit
+    option :worker_class
   end
 end

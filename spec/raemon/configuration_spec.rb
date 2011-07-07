@@ -37,5 +37,5 @@ describe Raemon::Configuration do
 
   its(:env) { should == RAEMON_ENV }
 
-  its(:memory_limit) { should be_nil }
+  its(:memory_limit) { should == described_class::DEFAULT_MEMORY_LIMIT_IN_MEGABYTES }
 end
