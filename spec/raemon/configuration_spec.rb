@@ -22,4 +22,18 @@ describe Raemon::Configuration do
       described_class.test_setting.should == true
     end
   end
+
+  its(:name) { should == described_class::DEFAULT_NAME }
+
+  its(:detatch) { should == described_class::DEFAULT_DETATCH }
+
+  its(:num_workers) { should == described_class::DEFAULT_NUM_WORKERS }
+
+  its(:logger) { should be_a(Logger) }
+
+  its(:worker_class) { should be_nil }
+
+  its(:timeout) { should be_nil }
+
+  its(:memory_limit) { should be_nil }
 end
