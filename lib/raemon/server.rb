@@ -5,8 +5,8 @@ module Raemon
     # Initializes application components without starting the master process
     def boot!
       load_environment
+      load_lib # Must be second so that initializers have access to lib
       load_initializers
-      load_lib
 
       initialize_logger
     end
@@ -78,6 +78,7 @@ module Raemon
 
     def load_lib
       libdir = config.root.join("lib")
+
       $LOAD_PATH.unshift libdir
       load_folder libdir
     end
