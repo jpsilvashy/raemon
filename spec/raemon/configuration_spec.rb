@@ -35,5 +35,7 @@ describe Raemon::Configuration do
 
   its(:timeout) { should == described_class::DEFAULT_TIMEOUT }
 
+  its(:env) { should == RAEMON_ENV }
+
   its(:memory_limit) { should be_nil }
 end

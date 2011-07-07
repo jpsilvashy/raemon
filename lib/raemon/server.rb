@@ -1,5 +1,3 @@
-RAEMON_ENV = (ENV['RAEMON_ENV'] || 'development').dup unless defined?(RAEMON_ENV)
-
 module Raemon
   module Server
     extend self

@@ -1,3 +1,5 @@
+RAEMON_ENV = (ENV['RAEMON_ENV'] || 'development').dup unless defined?(RAEMON_ENV)
+
 module Raemon
   ##
   # Manages configuration settings and defaults
@@ -45,6 +47,8 @@ module Raemon
     option :logger, :default => ::Logger.new($stdout)
 
     option :timeout, :default => DEFAULT_TIMEOUT
+
+    option :env, :default => RAEMON_ENV
 
     option :worker_class
 
