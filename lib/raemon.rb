@@ -23,6 +23,6 @@ module Raemon
   #
   # @see Raemon::Configuration
   def self.config
-    yield Configuration
+    block_given? and yield Configuration or Configuration
   end
 end

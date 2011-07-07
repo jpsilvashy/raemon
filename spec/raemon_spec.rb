@@ -9,5 +9,9 @@ describe Raemon do
         config.should == Raemon::Configuration
       end
     end
+
+    it 'returns the configuration object' do
+      described_class.config.should == Raemon::Configuration
+    end
   end
 end
