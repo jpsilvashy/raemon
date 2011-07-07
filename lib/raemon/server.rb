@@ -2,7 +2,6 @@ RAEMON_ENV = (ENV['RAEMON_ENV'] || 'development').dup unless defined?(RAEMON_ENV
 
 module Raemon
   module Server
-
     class << self
       attr_accessor :config
 
@@ -112,6 +111,5 @@ module Raemon
         send key rescue nil
       end
     end
-
   end
 end
