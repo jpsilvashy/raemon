@@ -15,15 +15,15 @@ module Raemon
 
       # Check if the server is already running
       if running?
-        config.logger.error "Error: #{server_name} is already running."
+        config.logger.error "Error: #{config.server_name} is already running."
         exit
       end
 
       # Start the master daemon
-      config.logger.info "=> Booting #{server_name} (#{config.env})"
+      config.logger.info "=> Booting #{config.server_name} (#{config.env})"
 
       Raemon::Master.start(config.num_workers, worker_class, {
-        :name         => config.name,
+        :name         => config.server_name,
         :pid_file     => pid_file,
         :detach       => config.detach,
         :logger       => config.logger,
@@ -56,7 +56,7 @@ module Raemon
 
     def load_environment
       environment_file = "#{RAEMON_ROOT}/config/environments/#{RAEMON_ENV}.rb"
-      eval IO.read(environment_file), binding
+      eval File.read(environment_file), binding
     end
 
     def load_initializers
@@ -86,7 +86,7 @@ module Raemon
     end
 
     def server_name_key
-      config.name.downcase.gsub(' ', '_')
+      config.server_name.downcase.gsub(' ', '_')
     end
 
     def worker_class

@@ -6,7 +6,7 @@ module Raemon
   module Configuration
     extend self
 
-    DEFAULT_NAME = "Raemon"
+    DEFAULT_SERVER_NAME = "Raemon"
 
     DEFAULT_DETACH = false
 
@@ -20,7 +20,7 @@ module Raemon
     # Define a configuration option with a default.
     #
     # @example Define the option.
-    #   Config.option(:name, default: "Raemon")
+    #   Config.option(:server_name, default: "Raemon")
     #
     # @param [Symbol] name The name of the configuration option
     #
@@ -38,7 +38,7 @@ module Raemon
       define_method("#{name}?") { !!send(name) }
     end
 
-    option :name, :default => DEFAULT_NAME
+    option :server_name, :default => DEFAULT_SERVER_NAME
 
     option :detach, :default => DEFAULT_DETACH
 

@@ -6,7 +6,7 @@
 require File.join(File.dirname(__FILE__), 'boot')
 
 Raemon::Server.run do |config|
-  config.name         = 'Queued'
+  config.server_name  = 'Queued'
   config.worker_class = 'Queued::Worker'
   config.num_workers  = 1
   config.timeout      = 60

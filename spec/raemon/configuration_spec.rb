@@ -23,7 +23,7 @@ describe Raemon::Configuration do
     end
   end
 
-  its(:name) { should == described_class::DEFAULT_NAME }
+  its(:server_name) { should == described_class::DEFAULT_SERVER_NAME }
 
   its(:detach) { should == described_class::DEFAULT_DETACH }
 
