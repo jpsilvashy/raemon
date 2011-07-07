@@ -2,9 +2,16 @@ module Raemon
   module Server
     extend self
 
-    def startup!
-      initialize_application
+    # Initializes application components without starting the master process
+    def boot!
+      load_environment
+      load_initializers
+      load_lib
 
+      initialize_logger
+    end
+
+    def startup!
       # Check if the server is already running
       if running?
         config.logger.error "Error: #{config.server_name} is already running."
@@ -25,20 +32,20 @@ module Raemon
     end
 
     def shutdown!
-      Raemon::Master.stop :pid_file => pid_file
+      Raemon::Master.stop(:pid_file => pid_file)
     end
 
-    def console!
-      initialize_application
+    def pid_file
+      "#{RAEMON_ROOT}/tmp/pids/#{server_name_key}.pid"
     end
 
-    def initialize_application
-      load_environment
-      load_initializers
-      load_lib
-
-      initialize_logger
+    def running?
+      pid = File.read(pid_file).to_i rescue 0
+      Process.kill(0, pid) if pid > 0
+    rescue Errno::ESRCH
     end
+
+    private
 
     def initialize_logger
       if config.detach?
@@ -60,18 +67,6 @@ module Raemon
       $LOAD_PATH.unshift libdir
       load_folder libdir
     end
-
-    def pid_file
-      "#{RAEMON_ROOT}/tmp/pids/#{server_name_key}.pid"
-    end
-
-    def running?
-      pid = File.read(pid_file).to_i rescue 0
-      Process.kill(0, pid) if pid > 0
-    rescue Errno::ESRCH
-    end
-
-    private
 
     def config
       Raemon::Configuration
