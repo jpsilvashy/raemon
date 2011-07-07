@@ -10,6 +10,8 @@ module Raemon
 
     DEFAULT_NUM_WORKERS = 1
 
+    DEFAULT_TIMEOUT = 3 * 60 # 3 minutes
+
     attr_accessor :settings
     @settings = {}
 
@@ -42,9 +44,9 @@ module Raemon
 
     option :logger, :default => ::Logger.new($stdout)
 
-    option :worker_class
+    option :timeout, :default => DEFAULT_TIMEOUT
 
-    option :timeout
+    option :worker_class
 
     option :memory_limit
   end

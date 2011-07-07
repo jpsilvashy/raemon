@@ -33,7 +33,7 @@ describe Raemon::Configuration do
 
   its(:worker_class) { should be_nil }
 
-  its(:timeout) { should be_nil }
+  its(:timeout) { should == described_class::DEFAULT_TIMEOUT }
 
   its(:memory_limit) { should be_nil }
 end
