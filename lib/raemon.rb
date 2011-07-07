@@ -33,4 +33,9 @@ module Raemon
   def self.env=(env)
     config.env = env
   end
+
+  # @see Raemon::Configuration.root
+  def self.root
+    config.root
+  end
 end
