@@ -5,6 +5,7 @@ require 'bundler'
 Bundler.setup
 
 require 'raemon'
+Raemon.env = ENV['RAEMON_ENV']
 Raemon.root = File.expand_path('../../', __FILE__)
 
 Raemon.config do |config|
