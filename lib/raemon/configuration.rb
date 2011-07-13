@@ -66,9 +66,7 @@ module Raemon
     # @return [logger] The logger used by this library
     def logger
       return @logger if @logger
-      @logger = ::Logger.new(STDOUT)
-      @logger.level = ::Logger.const_get(log_level.to_s.upcase)
-      @logger
+      setup_logger
     end
 
     # @param [String] root The root path for this application
@@ -85,5 +83,13 @@ module Raemon
       end
     end
 
+    private
+
+    def setup_logger
+      @logger           = ::Logger.new(STDOUT)
+      @logger.level     = ::Logger.const_get(log_level.to_s.upcase)
+      @logger.formatter = ::Logger::Formatter.new
+      @logger
+    end
   end
 end
