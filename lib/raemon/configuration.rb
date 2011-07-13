@@ -88,6 +88,7 @@ module Raemon
     def setup_logger
       @logger           = ::Logger.new(STDOUT)
       @logger.level     = ::Logger.const_get(log_level.to_s.upcase)
+      @logger.formatter = ::Logger::Formatter.new
       @logger
     end
   end
