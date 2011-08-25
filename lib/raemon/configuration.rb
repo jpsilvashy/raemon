@@ -48,8 +48,6 @@ module Raemon
 
     option :num_workers, :default => DEFAULT_NUM_WORKERS
 
-    option :log_level, :default => DEFAULT_LOG_LEVEL
-
     option :timeout, :default => DEFAULT_TIMEOUT
 
     option :env, :default => DEFAULT_ENVIRONMENT
@@ -65,8 +63,7 @@ module Raemon
 
     # @return [logger] The logger used by this library
     def logger
-      return @logger if @logger
-      setup_logger
+      @logger ||= setup_logger
     end
 
     # @param [String] root The root path for this application
@@ -86,8 +83,7 @@ module Raemon
     private
 
     def setup_logger
-      @logger           = ::Logger.new(STDOUT)
-      @logger.level     = ::Logger.const_get(log_level.to_s.upcase)
+      @logger = ::Logger.new(STDOUT)
       @logger.formatter = ::Logger::Formatter.new
       @logger
     end
