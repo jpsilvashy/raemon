@@ -29,8 +29,6 @@ describe Raemon::Configuration do
 
   its(:num_workers) { should == described_class::DEFAULT_NUM_WORKERS }
 
-  its(:log_level) { should == described_class::DEFAULT_LOG_LEVEL }
-
   its(:worker_class) { should be_nil }
 
   its(:timeout) { should == described_class::DEFAULT_TIMEOUT }
@@ -39,20 +37,7 @@ describe Raemon::Configuration do
 
   its(:memory_limit) { should == described_class::DEFAULT_MEMORY_LIMIT_IN_MEGABYTES }
 
-  describe '.logger' do
-    before(:each) do
-      described_class.logger = nil
-    end
-
-    it 'is a logger' do
-      described_class.logger.should be_a(Logger)
-    end
-
-    it 'sets the logger to use the desired log level' do
-      described_class.log_level = :warn
-      described_class.logger.level.should == Logger::WARN
-    end
-  end
+  its(:logger) { should be_a(Logger) }
 
   describe '.logger=' do
     let(:fake_logger) { double }

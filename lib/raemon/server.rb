@@ -7,8 +7,6 @@ module Raemon
       load_environment
       load_lib # Must be second so that initializers have access to lib
       load_initializers
-
-      initialize_logger
     end
 
     # Start the master daemon. Exits the script if the master daemon is
@@ -58,12 +56,6 @@ module Raemon
 
       def stop_master_daemon
         Raemon::Master.stop(:pid_file => pid_file)
-      end
-
-      def initialize_logger
-        if config.detach?
-          config.logger = ::Logger.new(config.root.join("log/#{server_name_key}.log"))
-        end
       end
 
       def load_environment

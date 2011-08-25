@@ -23,11 +23,6 @@ describe Raemon::Server do
       subject.should_receive(:load_lib)
       subject.boot!
     end
-
-    it 'initializes the logger' do
-      subject.should_receive(:initialize_logger)
-      subject.boot!
-    end
   end
 
   describe '.startup!' do
